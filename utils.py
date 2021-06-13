@@ -53,7 +53,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: the dataframe after adding features
     """  
     #encode  
-    columns_to_encode = ['city_id', 'device_class', 'booker_country', 'hotel_country']
+    columns_to_encode = ['city_id', 'device_class', 'booker_country', 'hotel_country', 'affiliate_id']
     encode_columns(df, columns_to_encode)
     #time
     build_time_features(df=df, col='checkin')
@@ -167,6 +167,7 @@ def split_features_label(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
                                              'device_class', 
                                              'booker_country', 
                                              'hotel_country', 
+                                             'affiliate_id',
                                              'checkin', 
                                              'checkout']).sort_values(by=['utrip_id'])
     labels = df[label_mask][['utrip_id', 'city_id']].sort_values(by=['utrip_id'])
