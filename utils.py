@@ -52,12 +52,6 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: the dataframe after adding features
     """  
-    #encode  
-    columns_to_encode = ['city_id', 'device_class', 'booker_country', 'hotel_country', 'affiliate_id', \
-                         'checkin_year', 'checkin_month',	'checkin_woy', 'checkin_dow', 'checkin_weekend', \
-                         'checkout_year', 'checkout_month', 'checkout_woy', 'checkout_dow', 'checkout_weekend', \
-                         'trip_length', 'season', 'count']
-    encode_columns(df, columns_to_encode)
     #time
     build_time_features(df=df, col='checkin')
     build_time_features(df=df, col='checkout')
@@ -70,6 +64,12 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     #count
     utrip_id_trip_length_mapping = [list(range(0, i)) for i in [x for x in df[['utrip_id', 'trip_length']].drop_duplicates(subset ='utrip_id')['trip_length']]]
     df['count'] = [item for sublist in utrip_id_trip_length_mapping for item in sublist]
+    #encode  
+    columns_to_encode = ['city_id', 'device_class', 'booker_country', 'hotel_country', 'affiliate_id', \
+                         'checkin_year', 'checkin_month',	'checkin_woy', 'checkin_dow', 'checkin_weekend', \
+                         'checkout_year', 'checkout_month', 'checkout_woy', 'checkout_dow', 'checkout_weekend', \
+                         'trip_length', 'season', 'count']
+    encode_columns(df, columns_to_encode)
     #city features
     build_prev_city(df=df, num_prev=3)
     build_first_city(df=df)
