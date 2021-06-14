@@ -99,7 +99,7 @@ def build_prev_city(df: pd.DataFrame, num_prev: int):
         df (pd.DataFrame): the dataframe
         num_prev (int): the number of previous stops to take
     """    
-    utrip_id_city_id_mapping = df.groupby(['utrip_id', 'count'])['city_id'].apply(list).groupby(level=0).apply(list) # a series that maps utrip_id to city_id
+    utrip_id_city_id_mapping = df.groupby(['utrip_id', 'count'])['city_id_encode'].apply(list).groupby(level=0).apply(list) # a series that maps utrip_id to city_id
     records_label, records_count, base_list = [], [], []
     for trip in set(df.utrip_id.values):
         base_list.append([0] * num_prev) # initialize first entry
@@ -128,7 +128,7 @@ def build_first_city(df: pd.DataFrame):
     # for trip in set(df.utrip_id.values):
     #     city_list.append([utrip_id_city_id_mapping[trip][0][0]] * len(utrip_id_city_id_mapping[trip]))
     # [item for sublist in city_list for item in sublist]
-    df['first_city'] = df.groupby(['utrip_id'])['city_id'].transform('first')
+    df['first_city'] = df.groupby(['utrip_id'])['city_id_encode'].transform('first')
 
 def encode_columns(df: pd.DataFrame, cols: List[str]):
     """encode_columns encode columns into integers
@@ -141,9 +141,6 @@ def encode_columns(df: pd.DataFrame, cols: List[str]):
         le = LabelEncoder()
         le.fit(df[col])
         LabelEncoderMapping[col] = le
-        if col == 'city_id': 
-            df[col] = le.transform(df[col])
-            continue
         df[f"{col}_encode"] = le.transform(df[col])
 
 def flatten_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -167,6 +164,7 @@ def split_features_label(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
     label_mask = df['is_label']
     features = df[~label_mask].drop(columns=['is_label',
+                                             'city_id',
                                              'device_class',
                                              'booker_country',
                                              'hotel_country',
@@ -186,6 +184,6 @@ def split_features_label(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
                                              'count',
                                              'checkin',
                                              'checkout']).sort_values(by=['utrip_id'])
-    labels = df[label_mask][['utrip_id', 'city_id']].sort_values(by=['utrip_id'])
+    labels = df[label_mask][['utrip_id', 'city_id_encode']].sort_values(by=['utrip_id'])
 
     return features, labels
