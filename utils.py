@@ -53,7 +53,10 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: the dataframe after adding features
     """  
     #encode  
-    columns_to_encode = ['city_id', 'device_class', 'booker_country', 'hotel_country', 'affiliate_id']
+    columns_to_encode = ['city_id', 'device_class', 'booker_country', 'hotel_country', 'affiliate_id', \
+                         'checkin_year', 'checkin_month',	'checkin_woy', 'checkin_dow', 'checkin_weekend', \
+                         'checkout_year', 'checkout_month', 'checkout_woy', 'checkout_dow', 'checkout_weekend', \
+                         'trip_length', 'season', 'count']
     encode_columns(df, columns_to_encode)
     #time
     build_time_features(df=df, col='checkin')
@@ -163,12 +166,25 @@ def split_features_label(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df.loc[:, 'is_label'] = df['checkin'] == df['is_label']
 
     label_mask = df['is_label']
-    features = df[~label_mask].drop(columns=['is_label', 
-                                             'device_class', 
-                                             'booker_country', 
-                                             'hotel_country', 
+    features = df[~label_mask].drop(columns=['is_label',
+                                             'device_class',
+                                             'booker_country',
+                                             'hotel_country',
                                              'affiliate_id',
-                                             'checkin', 
+                                             'checkin_year',
+                                             'checkin_month',
+                                             'checkin_woy',
+                                             'checkin_dow',
+                                             'checkin_weekend',
+                                             'checkout_year',
+                                             'checkout_month',
+                                             'checkout_woy',
+                                             'checkout_dow',
+                                             'checkout_weekend',
+                                             'trip_length',
+                                             'season',
+                                             'count',
+                                             'checkin',
                                              'checkout']).sort_values(by=['utrip_id'])
     labels = df[label_mask][['utrip_id', 'city_id']].sort_values(by=['utrip_id'])
 
