@@ -164,7 +164,6 @@ def split_features_label(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
     label_mask = df['is_label']
     features = df[~label_mask].drop(columns=['is_label',
-                                             'city_id',
                                              'device_class',
                                              'booker_country',
                                              'hotel_country',
@@ -184,6 +183,6 @@ def split_features_label(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
                                              'count',
                                              'checkin',
                                              'checkout']).sort_values(by=['utrip_id'])
-    labels = df[label_mask][['utrip_id', 'city_id_encode']].sort_values(by=['utrip_id'])
+    labels = df[label_mask][['utrip_id', 'city_id', 'city_id_encode']].sort_values(by=['utrip_id'])
 
     return features, labels
