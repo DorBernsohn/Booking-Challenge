@@ -141,7 +141,7 @@ def encode_columns(df: pd.DataFrame, cols: List[str]):
         le = LabelEncoder()
         le.fit(df[col].values)
         LabelEncoderMapping[col] = le
-        df[f"{col}_encode"] = le.transform(df[col].values)
+        df[f"{col}_encode"] = le.transform(df[col].values) + 1
 
 def flatten_features(df: pd.DataFrame) -> pd.DataFrame:
     """flatten_features flatten the data from few rows pre trip to one row
